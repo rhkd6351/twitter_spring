@@ -1,6 +1,9 @@
 package com.yemin.twitter.domain;
 
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -12,41 +15,48 @@ import java.util.List;
 @Entity
 @Getter
 @Table(name = "MEMBER_TB")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberVO {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idx")
-    private Long Idx;
+    @Column(name = "idx", updatable = false)
+    private Long idx;
 
     @NotEmpty
-    @Column(name = "email",length = 45)
+    @Column(name = "email", length = 100, updatable = false, unique = true, nullable = false)
     private String email;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "auth_name_fk")//연관관계 주인
-    @Column(length = 45)
-    private AuthVO authVO;
-
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_image_idx")//연관관계 주인
-    private MemberImageVO memberImages;
-
-    @OneToMany(mappedBy = "memberVO")
-    private List<PostVO>posts=new ArrayList<>();
-
     @NotEmpty
-    @Column(name = "password",length = 200)
+    @Column(name = "password", length = 255, nullable = false)
     private String password;
 
     @NotEmpty
-    @Column(name = "username",length = 45)
+    @Column(name = "username", length = 45, nullable = false)
     private String username;
 
     @CreationTimestamp
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "auth_name_fk")
+    private AuthVO auth;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "image_idx_fk")
+    private MemberImageVO memberImage;
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<PostVO> posts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<CommentVO> comments = new ArrayList<>();
+
+    @Builder
+    public MemberVO(String email, String password, String username, AuthVO auth) {
+        this.email = email;
+        this.password = password;
+        this.username = username;
+        this.auth = auth;
+    }
 }
