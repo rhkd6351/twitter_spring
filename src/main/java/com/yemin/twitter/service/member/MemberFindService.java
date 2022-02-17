@@ -18,11 +18,11 @@ public class MemberFindService {
 
     @Transactional(readOnly = true)
     public MemberVO getMyUserWithAuthorities() throws AuthException {
-        Optional<MemberVO> userVO = SecurityUtil.getCurrentUsername().flatMap(memberRepository::findOneByEmail);
+        Optional<MemberVO> memberVO = SecurityUtil.getCurrentUsername().flatMap(memberRepository::findOneByEmail);
 
-        if(userVO.isEmpty())
-            throw new AuthException("invalid user or token");
+        if(memberVO.isEmpty())
+            throw new AuthException("invalid member or token");
 
-        return userVO.get();
+        return memberVO.get();
     }
 }
