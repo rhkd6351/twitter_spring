@@ -52,7 +52,7 @@ public class PostController {
     }
 
 
-    @GetMapping("/user/posts")
+    @GetMapping("/member/posts")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<PagePostDTO> getAllMyPosts(@PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable) throws AuthException {
 
@@ -61,7 +61,7 @@ public class PostController {
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
 
-    @PostMapping("/user/posts")
+    @PostMapping("/member/posts")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<PostDTO> savePost(@RequestBody @Validated(ValidationGroups.postSaveGroup.class) PostDTO postDTO) throws AuthException {
 
@@ -70,7 +70,7 @@ public class PostController {
         return new ResponseEntity<>(savedPost, HttpStatus.CREATED);
     }
 
-    @PutMapping("/user/posts/{post-idx}")
+    @PutMapping("/member/posts/{post-idx}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<PostDTO> modifyPost(
             @RequestBody @Validated(ValidationGroups.postUpdateGroup.class) PostDTO postDTO,
@@ -81,7 +81,7 @@ public class PostController {
         return new ResponseEntity<>(updatedPost, HttpStatus.OK);
     }
 
-    @DeleteMapping("/user/posts/{post-idx}")
+    @DeleteMapping("/member/posts/{post-idx}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<MessageDTO> modifyPost(
             @PathVariable(value = "post-idx")Long idx) throws AuthException, NotFoundException {
