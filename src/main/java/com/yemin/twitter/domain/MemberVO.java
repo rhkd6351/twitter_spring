@@ -57,21 +57,27 @@ public class MemberVO {
     private List<CommentVO> comments = new ArrayList<>();
 
     @Builder
-    public MemberVO(String email, String password, String username, AuthVO auth) {
+    public MemberVO(String email, String password, String username, AuthVO auth, boolean activated) {
         this.email = email;
         this.password = password;
         this.username = username;
         this.auth = auth;
+        this.activated = activated;
     }
 
     public MemberDTO dto(){
         return MemberDTO.builder()
                 .idx(this.idx)
                 .email(this.email)
-                .password("*") //보안을 위해 비밀번호는 dto로 변환x
+                .password("*")
                 .username(this.username)
                 .auth(this.auth.getName())
                 .build();
+    }
+
+    public void addPost(PostVO post){
+        this.posts.add(post);
+        post.setMember(this);
     }
 
 }

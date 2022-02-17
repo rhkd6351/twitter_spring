@@ -16,7 +16,7 @@ public class PostImageVO {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idx", updatable = false)
-    private int idx;
+    private Long idx;
 
     @Column(name = "name")
     private String name;
@@ -37,7 +37,7 @@ public class PostImageVO {
     private String extension;
 
     @CreationTimestamp
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)

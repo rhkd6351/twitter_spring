@@ -38,6 +38,7 @@ public class MemberDTO {
                 .password(encodedPassword)
                 .username(this.username)
                 .auth(auth)
+                .activated(true)
                 .build();
     }
 

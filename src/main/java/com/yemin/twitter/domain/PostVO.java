@@ -1,5 +1,6 @@
 package com.yemin.twitter.domain;
 
+import com.yemin.twitter.dto.post.PostDTO;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -27,14 +28,14 @@ public class PostVO {
     @Column(name = "content", nullable = false)
     private String content;
 
-    @UpdateTimestamp
-    @Column(name = "created_at")
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    @CreationTimestamp
+    @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
@@ -60,6 +61,25 @@ public class PostVO {
         comment.setPost(this);
     }
 
+    //파라미터는 dto에 해당 연관관계 객체들을 포함시킬지 여부
+    public PostDTO dto(Boolean member, Boolean comments, Boolean postImages){
+        return PostDTO.builder()
+                .idx(this.idx)
+                .title(this.title)
+                .content(this.content)
+                .createdAt(this.createdAt)
+                .deletedAt(this.deletedAt)
+                .updatedAt(this.updatedAt)
+                //TODO member, comments, postImages 엔티티 dto() 구현 후 추가
+                .build();
+    }
 
+    public void setMember(MemberVO member) {
+        this.member = member;
+    }
 
+    public void update(String title, String content){
+        this.title = title;
+        this.content = content;
+    }
 }
