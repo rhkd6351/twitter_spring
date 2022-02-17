@@ -1,5 +1,6 @@
 package com.yemin.twitter.domain;
 
+import com.yemin.twitter.dto.member.MemberDTO;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,6 +39,9 @@ public class MemberVO {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name="activated", nullable = false)
+    private boolean activated;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "auth_name_fk")
     private AuthVO auth;
@@ -59,4 +63,15 @@ public class MemberVO {
         this.username = username;
         this.auth = auth;
     }
+
+    public MemberDTO dto(){
+        return MemberDTO.builder()
+                .idx(this.idx)
+                .email(this.email)
+                .password("*") //보안을 위해 비밀번호는 dto로 변환x
+                .username(this.username)
+                .auth(this.auth.getName())
+                .build();
+    }
+
 }
