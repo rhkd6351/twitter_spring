@@ -9,7 +9,7 @@ import com.yemin.twitter.dto.post.PostDTO;
 import com.yemin.twitter.service.post.PostFindService;
 import com.yemin.twitter.service.post.PostUpdateService;
 import javassist.NotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -63,7 +63,8 @@ public class PostController {
 
     @PostMapping("/member/posts")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<PostDTO> savePost(@RequestBody @Validated(ValidationGroups.postSaveGroup.class) PostDTO postDTO) throws AuthException {
+    public ResponseEntity<PostDTO> savePost(@RequestBody @Validated(ValidationGroups.postSaveGroup.class) PostDTO postDTO)
+            throws AuthException {
 
         PostDTO savedPost = postUpdateService.save(postDTO);
 

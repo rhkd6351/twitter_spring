@@ -7,4 +7,7 @@ public class ValidationGroups {
 
     public interface postSaveGroup {};
     public interface postUpdateGroup {};
+
+    public interface commentSaveGroup {};
+    public interface commentUpdateGroup {};
 }
