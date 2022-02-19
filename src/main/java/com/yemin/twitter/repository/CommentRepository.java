@@ -15,6 +15,6 @@ public interface CommentRepository extends JpaRepository<CommentVO, Long> {
 
     public Page<CommentVO> findAll(Pageable pageable);
 
-    Optional<CommentVO>findByPost(PostVO post, CommentVO comment);
+//    Optional<CommentVO>findByPost(PostVO post, CommentVO comment);
     //특정 게시글애 작성한 단일 댓글 조회
 }

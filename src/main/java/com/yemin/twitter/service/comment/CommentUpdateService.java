@@ -24,49 +24,55 @@ public class CommentUpdateService {
     PostUpdateService postUpdateService;
     MemberFindService memberFindService;
 
-    public CommentUpdateService(CommentRepository commentRepository,PostFindService postFindService,PostUpdateService postUpdateService,MemberFindService memberFindService)
-    {
-        this.commentRepository=commentRepository;
-        this.postFindService=postFindService;
-        this.postUpdateService=postUpdateService;
+    public CommentUpdateService(CommentRepository commentRepository, CommentFindService commentFindService, PostFindService postFindService, PostUpdateService postUpdateService, MemberFindService memberFindService) {
+        this.commentRepository = commentRepository;
+        this.commentFindService = commentFindService;
+        this.postFindService = postFindService;
+        this.postUpdateService = postUpdateService;
+        this.memberFindService = memberFindService;
     }
 
-    public CommentVO save(CommentVO comment){
+    public CommentVO save(CommentVO comment) {
 
         return commentRepository.save(comment);
     }
 
     @Transactional
-    public CommentDTO save(Long idx,CommentDTO commentDTO)throws  NotFoundException{
+    public CommentDTO save(Long idx, CommentDTO commentDTO) throws NotFoundException, AuthException {
 
-        PostVO post=postFindService.findByIdx(idx);
+        MemberVO member = memberFindService.getMyUserWithAuthorities();
+        PostVO post = postFindService.findByIdx(idx);
 
-        CommentVO comment=commentDTO.toEntity();
+        CommentVO comment = commentDTO.toEntity();
         post.addComment(comment);
+        member.addComment(comment);
 
-       return comment.dto(false,false);
+        this.save(comment);
+
+        return comment.dto(false, false);
     }
 
     @Transactional
-    public CommentDTO update(Long postIdx,Long idx,CommentDTO commentDTO)throws AuthException,NotFoundException{
-        MemberVO member=memberFindService.getMyUserWithAuthorities();
-        CommentVO comment=commentFindService.findByPost(postIdx,idx);
+    public CommentDTO update(Long idx, CommentDTO commentDTO) throws AuthException, NotFoundException {
+        MemberVO member = memberFindService.getMyUserWithAuthorities();
+        CommentVO comment = commentFindService.findByIdx(idx);
 
-        if(comment.getMember()!=member)
+        if (comment.getMember() != member)
             throw new AuthException("not your own comment");
 
         comment.update(commentDTO.getContent());
         this.save(comment);
 
-        return comment.dto(false,false);
+        return comment.dto(false, false);
     }
 
     @Transactional
-    public void delete(Long postIdx, Long idx)throws NotFoundException,AuthException{
-        MemberVO member=memberFindService.getMyUserWithAuthorities();
-        CommentVO comment=commentFindService.findByPost(postIdx,idx);
+    public void delete(Long idx) throws NotFoundException, AuthException {
+        MemberVO member = memberFindService.getMyUserWithAuthorities();
 
-        if(comment.getMember()!=member)
+        CommentVO comment = commentFindService.findByIdx(idx);
+
+        if (comment.getMember() != member)
             throw new AuthException("not your own comment");
 
         commentRepository.delete(comment);

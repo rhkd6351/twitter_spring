@@ -70,4 +70,7 @@ public class CommentVO {
         this.content = content;
     }
 
+    public void setMember(MemberVO member) {
+        this.member = member;
+    }
 }

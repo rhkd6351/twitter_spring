@@ -18,6 +18,7 @@ import javax.security.auth.message.AuthException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 @Service
 public class CommentFindService {
 
@@ -28,49 +29,42 @@ public class CommentFindService {
     PostFindService postFindService;
 
 
-    public CommentFindService(CommentRepository commentRepository,MemberFindService memberFindService,PostFindService postFindService){
-        this.commentRepository=commentRepository;
-        this.memberFindService=memberFindService;
-        this.postFindService=postFindService;
+    public CommentFindService(CommentRepository commentRepository, MemberFindService memberFindService, PostFindService postFindService) {
+        this.commentRepository = commentRepository;
+        this.memberFindService = memberFindService;
+        this.postFindService = postFindService;
 
 
     }
 
     @Transactional(readOnly = true)
-    public CommentVO findByPost(Long postIdx,Long commentIdx) throws NotFoundException{
+    public CommentVO findByIdx(Long commentIdx) throws NotFoundException {
         //게시글의 댓글 단건 조회
 
-        PostVO post=postFindService.findByIdx(postIdx);
-
-        Optional <CommentVO> comment=commentRepository.findById(commentIdx);
+        Optional<CommentVO> comment = commentRepository.findById(commentIdx);
 
         //만약에 comment가 존재하지 않다면, 생성되지 않은 댓글의 idx라고 예외 반환
-        if(comment.isEmpty())
+        if (comment.isEmpty())
             throw new NotFoundException("invalid idx of comment");
 
-        return commentRepository.findByPost(post,comment);
+        return comment.get();
     }
 
     @Transactional(readOnly = true)
-    public PageCommentDTO findAll(Pageable pageable){
+    public PageCommentDTO findAll(Pageable pageable) {
 
-        Page <CommentVO> page=commentRepository.findAll(pageable);
-        
+        Page<CommentVO> page = commentRepository.findAll(pageable);
+
         //페이징 값이 담겨있는 page를 dto로 변환
-        List<CommentDTO>comments=page.stream().map(i->i.dto(false,false)).collect(Collectors.toList());
+        List<CommentDTO> comments = page.stream().map(i -> i.dto(false, false)).collect(Collectors.toList());
 
         return PageCommentDTO.builder()
                 .comments(comments)
                 .currentPage(pageable.getPageNumber())
-                .totalPage(page.getTotalPages()-1)
+                .totalPage(page.getTotalPages() - 1)
                 .build();
 
     }
-
-
-
-
-
 
 
 }

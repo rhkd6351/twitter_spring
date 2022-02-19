@@ -3,6 +3,7 @@ package com.yemin.twitter.controller.comment;
 
 import com.yemin.twitter.domain.CommentVO;
 import com.yemin.twitter.domain.PostVO;
+import com.yemin.twitter.dto.MessageDTO;
 import com.yemin.twitter.dto.ValidationGroups;
 import com.yemin.twitter.dto.comment.CommentDTO;
 import com.yemin.twitter.dto.comment.PageCommentDTO;
@@ -34,69 +35,66 @@ public class CommentController {
 
     CommentFindService commentFindService;
     CommentUpdateService commentUpdateService;
-    PostFindService postFindService;
 
-    public CommentController(CommentUpdateService commentUpdateService, CommentFindService commentFindService,PostFindService postFindService) {
+    public CommentController(CommentFindService commentFindService, CommentUpdateService commentUpdateService) {
         this.commentFindService = commentFindService;
         this.commentUpdateService = commentUpdateService;
-        this.postFindService= postFindService;
     }
 
+    @GetMapping("/posts/comments") // 전체 댓글 조회
+    public ResponseEntity<PageCommentDTO> getPostComments(
+            @PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable) {
 
-    @GetMapping("/comments") // 전체 댓글 조회
-    public ResponseEntity<CommentDTO>getPostComments(
-            @PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC)Pageable pageable)
-    {
+        PageCommentDTO page = commentFindService.findAll(pageable);
 
-       PageCommentDTO page=commentFindService.findAll(pageable);
-
-       return new ResponseEntity<>(page,HttpStatus.OK);
+        return new ResponseEntity<>(page, HttpStatus.OK);
     }
 
+    @GetMapping("/posts/comments/{comment-idx}") // 단일 댓글 조회
+    public ResponseEntity<CommentDTO> getCommentByIdx(
+            @PathVariable(value = "comment-idx") Long idx) throws NotFoundException {
 
-    @GetMapping("/posts/{post-idx}comments/{comment-idx}") //단일 댓글 조회
-    public ResponseEntity<CommentDTO> getCommentByIdx(@PathVariable(value = "post-idx") Long postIdx,@PathVariable(value = "comment-idx")Long idx) throws NotFoundException {
-
-        CommentVO comment = commentFindService.findByPost(postIdx,idx);
+        CommentVO comment = commentFindService.findByIdx(idx);
         CommentDTO dto = comment.dto(false, false);
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
 
-    @PostMapping("/post/{post-idx}/comments") // 댓글 생성
+    @PostMapping("/posts/{post-idx}/comments") // 댓글 생성
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
     public ResponseEntity<CommentDTO> saveComment(
-            @PathVariable (value = "post-idx")Long idx,
-            @RequestBody @Validated(ValidationGroups.commentSaveGroup.class)CommentDTO commentDTO) throws NotFoundException {
+            @PathVariable(value = "post-idx") Long idx,
+            @RequestBody @Validated(ValidationGroups.commentSaveGroup.class) CommentDTO commentDTO) throws NotFoundException, AuthException {
 
-        CommentDTO savedComment=commentUpdateService.save(idx,commentDTO);
-            return  new ResponseEntity<>(savedComment, HttpStatus.CREATED);
+        CommentDTO savedComment = commentUpdateService.save(idx, commentDTO);
+
+        return new ResponseEntity<>(savedComment, HttpStatus.CREATED);
     }
 
 
-    @PutMapping("/posts/{post-idx}/comments/{comment-idx}") // 댓글 수정
+    @PutMapping("/posts/comments/{comment-idx}") // 댓글 수정
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<CommentDTO> modifyComment(
-            @PathVariable(value = "post-idx")Long postIdx,
             @PathVariable(value = "comment-idx") Long idx,
             @RequestBody @Validated(ValidationGroups.commentUpdateGroup.class) CommentDTO commentDTO
-             )throws AuthException ,NotFoundException {
+    ) throws AuthException, NotFoundException {
 
-        CommentDTO updatedComment=commentUpdateService.update(postIdx,idx,commentDTO);
+        CommentDTO updatedComment = commentUpdateService.update(idx, commentDTO);
 
-        return new ResponseEntity<>(updatedComment,HttpStatus.OK);
+        return new ResponseEntity<>(updatedComment, HttpStatus.OK);
     }
 
 
-    @DeleteMapping("/posts/{post-idx}/comments/{comment-idx}") //댓글 삭제
+    @DeleteMapping("/posts/comments/{comment-idx}") // 댓글 삭제
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity <CommentDTO> deleteComment(
-            @PathVariable(value = "post-idx") Long postIdx,
-            @PathVariable(value = "comment-idx") Long idx,@RequestBody CommentDTO commentDTO)
-            throws AuthException ,NotFoundException
-    {
-        CommentDTO deletedComment = commentUpdateService.delete(postIdx,idx,commentDTO);
-        return new ResponseEntity<>(deletedComment,HttpStatus.OK);
+    public ResponseEntity<MessageDTO> deleteComment(
+            @PathVariable(value = "comment-idx") Long idx)
+            throws AuthException, NotFoundException {
+
+        commentUpdateService.delete(idx);
+
+        return new ResponseEntity<>(new MessageDTO("delete success"), HttpStatus.OK);
     }
 
 }
