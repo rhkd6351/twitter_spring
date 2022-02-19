@@ -4,11 +4,13 @@ import com.yemin.twitter.dto.post.PostDTO;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -43,10 +45,10 @@ public class PostVO {
     @JoinColumn(name = "member_idx_fk")
     private MemberVO member;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentVO> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostImageVO> postImages = new ArrayList<>();
 
     @Builder
@@ -70,6 +72,7 @@ public class PostVO {
                 .createdAt(this.createdAt)
                 .deletedAt(this.deletedAt)
                 .updatedAt(this.updatedAt)
+                .postImages(postImages ? this.postImages.stream().map(PostImageVO::dto).collect(Collectors.toList()) : null)
                 //TODO member, comments, postImages 엔티티 dto() 구현 후 추가
                 .build();
     }
@@ -78,8 +81,17 @@ public class PostVO {
         this.member = member;
     }
 
+    public void addImage(PostImageVO vo){
+        this.postImages.add(vo);
+        vo.setPost(this);
+    }
+
     public void update(String title, String content){
         this.title = title;
         this.content = content;
+    }
+
+    public void clearImages(){
+        this.postImages.clear();
     }
 }
