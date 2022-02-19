@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -30,15 +31,18 @@ public class PostDTO {
 
     private LocalDateTime updatedAt;
 
+    private List<PostImageDTO> postImages;
+
 
     @Builder
-    public PostDTO(Long idx, String title, String content, LocalDateTime createdAt, LocalDateTime deletedAt, LocalDateTime updatedAt) {
+    public PostDTO(Long idx, String title, String content, LocalDateTime createdAt, LocalDateTime deletedAt, LocalDateTime updatedAt, List<PostImageDTO> postImages) {
         this.idx = idx;
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;
         this.deletedAt = deletedAt;
         this.updatedAt = updatedAt;
+        this.postImages = postImages;
     }
 
     public PostVO toEntity(){

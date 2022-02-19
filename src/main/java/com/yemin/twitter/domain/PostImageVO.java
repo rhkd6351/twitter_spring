@@ -1,6 +1,8 @@
 package com.yemin.twitter.domain;
 
+import com.yemin.twitter.dto.post.PostImageDTO;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -21,20 +23,8 @@ public class PostImageVO {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "original_name")
-    private String originalName;
-
-    @Column(name = "save_name")
-    private String saveName;
-
-    @Column(name = "size")
-    private Integer size;
-
-    @Column(name = "upload_path")
-    private String uploadPath;
-
-    @Column(name = "extension",length = 45)
-    private String extension;
+    @Embedded
+    private FileInfo fileInfo;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -44,4 +34,27 @@ public class PostImageVO {
     @JoinColumn(name = "post_idx_fk")
     private PostVO post;
 
+    @Builder
+    public PostImageVO(String name, FileInfo fileInfo) {
+        this.name = name;
+        this.fileInfo = fileInfo;
+    }
+
+    public PostImageDTO dto(){
+        return PostImageDTO.builder()
+                .idx(this.idx)
+                .name(this.name)
+                .originalName(this.fileInfo.getOriginalName())
+                .saveName(this.fileInfo.getSaveName())
+                .size(this.fileInfo.getSize())
+                .uploadPath(this.fileInfo.getUploadPath())
+                .extension(this.fileInfo.getExtension())
+                .url("/api/posts/images/" + this.name)
+                .createdAt(this.createdAt)
+                .build();
+    }
+
+    public void setPost(PostVO post) {
+        this.post = post;
+    }
 }

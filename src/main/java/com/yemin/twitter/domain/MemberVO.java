@@ -80,4 +80,6 @@ public class MemberVO {
         post.setMember(this);
     }
 
+
+
 }
