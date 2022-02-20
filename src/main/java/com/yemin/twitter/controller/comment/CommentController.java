@@ -8,6 +8,7 @@ import com.yemin.twitter.dto.ValidationGroups;
 import com.yemin.twitter.dto.comment.CommentDTO;
 import com.yemin.twitter.dto.comment.PageCommentDTO;
 
+import com.yemin.twitter.dto.post.PagePostDTO;
 import com.yemin.twitter.dto.post.PostDTO;
 import com.yemin.twitter.service.comment.CommentFindService;
 import com.yemin.twitter.service.comment.CommentUpdateService;
@@ -35,10 +36,11 @@ public class CommentController {
 
     CommentFindService commentFindService;
     CommentUpdateService commentUpdateService;
-
-    public CommentController(CommentFindService commentFindService, CommentUpdateService commentUpdateService) {
+    PostFindService postFindService;
+    public CommentController(CommentFindService commentFindService, CommentUpdateService commentUpdateService,PostFindService postFindService) {
         this.commentFindService = commentFindService;
         this.commentUpdateService = commentUpdateService;
+        this.postFindService=postFindService;
     }
 
     @GetMapping("/posts/comments") // 전체 댓글 조회
@@ -59,7 +61,28 @@ public class CommentController {
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
+    //post별 댓글리스트 가져오기
+    @GetMapping("/posts/{post-idx}/comments")
+    public ResponseEntity<PageCommentDTO> getCommentsByPost(
+            @PathVariable (value = "post-idx")Long idx,
+            @PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable
+    )throws NotFoundException{
+        PostVO post=postFindService.findByIdx(idx);
+        PageCommentDTO page = commentFindService.findByPost(post,pageable);
+        return new ResponseEntity<>(page, HttpStatus.OK);
+    }
 
+    //내가 쓴 댓글 리스트 가져오기
+    @GetMapping("/members/comments")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<PageCommentDTO> getAllMyComments(
+
+            @PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable)throws
+            AuthException
+    {
+        PageCommentDTO page=commentFindService.findAllWithAuth(pageable);
+        return new ResponseEntity<>(page,HttpStatus.OK);
+    }
 
     @PostMapping("/posts/{post-idx}/comments") // 댓글 생성
     @PreAuthorize("hasAnyRole('ROLE_USER')")

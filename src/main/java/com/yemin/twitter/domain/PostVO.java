@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -62,7 +63,8 @@ public class PostVO {
     }
 
     //파라미터는 dto에 해당 연관관계 객체들을 포함시킬지 여부
-    public PostDTO dto(Boolean member, Boolean comments, Boolean postImages){
+    public PostDTO dto(Boolean member, Boolean comments, Boolean postImages)
+    {
         return PostDTO.builder()
                 .idx(this.idx)
                 .title(this.title)
@@ -71,8 +73,10 @@ public class PostVO {
                 .deletedAt(this.deletedAt)
                 .updatedAt(this.updatedAt)
                 //TODO member, comments, postImages 엔티티 dto() 구현 후 추가
+                .comments(comments ? this.comments.stream().map(CommentVO::dto).collect(Collectors.toList()) : null)
                 .build();
     }
+
 
     public void setMember(MemberVO member) {
         this.member = member;

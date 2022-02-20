@@ -33,12 +33,13 @@ public class CommentDTO {
     private PostVO post;
 
     @Builder
-    public CommentDTO(Long idx,String content,LocalDateTime createdAt,LocalDateTime updatedAt,LocalDateTime deletedAt){
+    public CommentDTO(Long idx,String content,LocalDateTime createdAt,LocalDateTime updatedAt,LocalDateTime deletedAt,MemberVO member){
         this.idx=idx;
         this.content=content;
         this.createdAt=createdAt;
         this.deletedAt=deletedAt;
         this.updatedAt=updatedAt;
+        this.member=member;
     }
 
     public CommentVO toEntity(){

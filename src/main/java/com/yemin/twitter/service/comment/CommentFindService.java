@@ -1,6 +1,7 @@
 package com.yemin.twitter.service.comment;
 
 import com.yemin.twitter.domain.CommentVO;
+import com.yemin.twitter.domain.MemberVO;
 import com.yemin.twitter.domain.PostVO;
 import com.yemin.twitter.dto.comment.CommentDTO;
 import com.yemin.twitter.dto.comment.PageCommentDTO;
@@ -66,5 +67,36 @@ public class CommentFindService {
 
     }
 
+    @Transactional(readOnly = true)
+    public PageCommentDTO findByPost(PostVO post,Pageable pageable) {
+
+        Page<CommentVO> page = commentRepository.findByPost(post,pageable);
+
+        //페이징 값이 담겨있는 page를 dto로 변환
+        List<CommentDTO> comments = page.stream().map(i -> i.dto(true, true)).collect(Collectors.toList());
+
+        return PageCommentDTO.builder()
+                .comments(comments)
+                .currentPage(pageable.getPageNumber())
+                .totalPage(page.getTotalPages() - 1)
+                .build();
+
+    }
+
+
+    @Transactional(readOnly = true)
+    public PageCommentDTO findAllWithAuth(Pageable pageable)throws AuthException {
+        MemberVO member = memberFindService.getMyUserWithAuthorities();
+
+        Page<CommentVO> page = commentRepository.findAllByMember(member, pageable);
+        List<CommentDTO> comments = page.stream().map(i -> i.dto(true, true)).collect(Collectors.toList());
+        return PageCommentDTO.builder()
+                .comments(comments)
+                .currentPage(pageable.getPageNumber())
+                .totalPage(page.getTotalPages() - 1)
+                .totalPage(page.getTotalPages()-1)
+                .build();
+
+    }
 
 }

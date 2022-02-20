@@ -1,6 +1,7 @@
 package com.yemin.twitter.repository;
 
 import com.yemin.twitter.domain.CommentVO;
+import com.yemin.twitter.domain.MemberVO;
 import com.yemin.twitter.domain.PostVO;
 import com.yemin.twitter.dto.comment.CommentDTO;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,11 @@ public interface CommentRepository extends JpaRepository<CommentVO, Long> {
 
     public Page<CommentVO> findAll(Pageable pageable);
 
-//    Optional<CommentVO>findByPost(PostVO post, CommentVO comment);
-    //특정 게시글애 작성한 단일 댓글 조회
+
+public Page <CommentVO> findByPost(PostVO post,Pageable pageable);
+
+
+    public Page<CommentVO> findAllByMember(MemberVO member, Pageable pageable);
+
+
 }
