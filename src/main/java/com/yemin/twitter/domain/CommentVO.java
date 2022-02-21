@@ -59,6 +59,7 @@ public class CommentVO {
                 .createdAt(this.createdAt)
                 .updatedAt(this.updatedAt)
                 .deletedAt(this.deletedAt)
+                .member(member ? this.member.dto() : null)
                 .build();
     }
 

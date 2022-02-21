@@ -3,6 +3,7 @@ package com.yemin.twitter.dto.post;
 import com.yemin.twitter.domain.PostVO;
 import com.yemin.twitter.dto.ValidationGroups;
 import com.yemin.twitter.dto.comment.CommentDTO;
+import com.yemin.twitter.dto.member.MemberDTO;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,9 +35,10 @@ public class PostDTO {
 
     private List<PostImageDTO> postImages;
     private List<CommentDTO> comments;
+    private MemberDTO member;
 
     @Builder
-    public PostDTO(Long idx, String title, String content, LocalDateTime createdAt, LocalDateTime deletedAt, LocalDateTime updatedAt, List<PostImageDTO> postImages, List<CommentDTO>comments) {
+    public PostDTO(Long idx, String title, String content, LocalDateTime createdAt, LocalDateTime deletedAt, LocalDateTime updatedAt, List<PostImageDTO> postImages, List<CommentDTO>comments, MemberDTO member) {
         this.idx = idx;
         this.title = title;
         this.content = content;
@@ -45,6 +47,7 @@ public class PostDTO {
         this.updatedAt = updatedAt;
         this.comments=comments;
         this.postImages = postImages;
+        this.member = member;
     }
 
     public PostVO toEntity(){

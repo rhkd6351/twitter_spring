@@ -57,7 +57,7 @@ public class CommentFindService {
         Page<CommentVO> page = commentRepository.findAll(pageable);
 
         //페이징 값이 담겨있는 page를 dto로 변환
-        List<CommentDTO> comments = page.stream().map(i -> i.dto(false, false)).collect(Collectors.toList());
+        List<CommentDTO> comments = page.stream().map(i -> i.dto(true, false)).collect(Collectors.toList());
 
         return PageCommentDTO.builder()
                 .comments(comments)
@@ -73,7 +73,7 @@ public class CommentFindService {
         Page<CommentVO> page = commentRepository.findByPost(post,pageable);
 
         //페이징 값이 담겨있는 page를 dto로 변환
-        List<CommentDTO> comments = page.stream().map(i -> i.dto(true, true)).collect(Collectors.toList());
+        List<CommentDTO> comments = page.stream().map(i -> i.dto(true, false)).collect(Collectors.toList());
 
         return PageCommentDTO.builder()
                 .comments(comments)

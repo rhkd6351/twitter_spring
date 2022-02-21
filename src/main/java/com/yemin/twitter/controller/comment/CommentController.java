@@ -37,10 +37,11 @@ public class CommentController {
     CommentFindService commentFindService;
     CommentUpdateService commentUpdateService;
     PostFindService postFindService;
-    public CommentController(CommentFindService commentFindService, CommentUpdateService commentUpdateService,PostFindService postFindService) {
+
+    public CommentController(CommentFindService commentFindService, CommentUpdateService commentUpdateService, PostFindService postFindService) {
         this.commentFindService = commentFindService;
         this.commentUpdateService = commentUpdateService;
-        this.postFindService=postFindService;
+        this.postFindService = postFindService;
     }
 
     @GetMapping("/posts/comments") // 전체 댓글 조회
@@ -57,34 +58,35 @@ public class CommentController {
             @PathVariable(value = "comment-idx") Long idx) throws NotFoundException {
 
         CommentVO comment = commentFindService.findByIdx(idx);
-        CommentDTO dto = comment.dto(false, false);
+        CommentDTO dto = comment.dto(true, false);
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
+
     //post별 댓글리스트 가져오기
     @GetMapping("/posts/{post-idx}/comments")
     public ResponseEntity<PageCommentDTO> getCommentsByPost(
-            @PathVariable (value = "post-idx")Long idx,
+            @PathVariable(value = "post-idx") Long idx,
             @PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable
-    )throws NotFoundException{
-        PostVO post=postFindService.findByIdx(idx);
-        PageCommentDTO page = commentFindService.findByPost(post,pageable);
+    ) throws NotFoundException {
+        PostVO post = postFindService.findByIdx(idx);
+        PageCommentDTO page = commentFindService.findByPost(post, pageable);
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
 
     //내가 쓴 댓글 리스트 가져오기
-    @GetMapping("/members/comments")
+    @GetMapping("/members/posts/comments")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<PageCommentDTO> getAllMyComments(
 
-            @PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable)throws
-            AuthException
-    {
-        PageCommentDTO page=commentFindService.findAllWithAuth(pageable);
-        return new ResponseEntity<>(page,HttpStatus.OK);
+            @PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable) throws
+            AuthException {
+        PageCommentDTO page = commentFindService.findAllWithAuth(pageable);
+        return new ResponseEntity<>(page, HttpStatus.OK);
     }
 
-    @PostMapping("/posts/{post-idx}/comments") // 댓글 생성
+    // 댓글 생성
+    @PostMapping("/posts/{post-idx}/comments")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     public ResponseEntity<CommentDTO> saveComment(
             @PathVariable(value = "post-idx") Long idx,

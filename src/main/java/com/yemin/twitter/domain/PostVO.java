@@ -73,9 +73,9 @@ public class PostVO {
                 .createdAt(this.createdAt)
                 .deletedAt(this.deletedAt)
                 .updatedAt(this.updatedAt)
+                .member(member ? this.member.dto() : null)
                 .postImages(postImages ? this.postImages.stream().map(PostImageVO::dto).collect(Collectors.toList()) : null)
-                //TODO member, comments, postImages 엔티티 dto() 구현 후 추가
-                .comments(comments ? this.comments.stream().map(CommentVO::dto).collect(Collectors.toList()) : null)
+                .comments(comments ? this.comments.stream().map(i -> i.dto(false, false)).collect(Collectors.toList()) : null)
                 .build();
     }
 

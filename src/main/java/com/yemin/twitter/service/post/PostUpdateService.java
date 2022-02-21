@@ -57,7 +57,7 @@ public class PostUpdateService {
             }
         }
 
-        return savedPost.dto(false, false, true);
+        return savedPost.dto(true, false, true);
     }
 
     //title, content만 수정
@@ -83,7 +83,7 @@ public class PostUpdateService {
 
         this.save(post);
 
-        return post.dto(false, false, true);
+        return post.dto(true, false, true);
     }
 
     @Transactional

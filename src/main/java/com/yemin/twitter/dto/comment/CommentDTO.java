@@ -5,6 +5,8 @@ import com.yemin.twitter.domain.CommentVO;
 import com.yemin.twitter.domain.MemberVO;
 import com.yemin.twitter.domain.PostVO;
 import com.yemin.twitter.dto.ValidationGroups;
+import com.yemin.twitter.dto.member.MemberDTO;
+import com.yemin.twitter.dto.post.PostDTO;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,21 +30,21 @@ public class CommentDTO {
 
     private LocalDateTime deletedAt;
 
-    private MemberVO member;
+    private MemberDTO member;
 
-    private PostVO post;
+    private PostDTO post;
 
     @Builder
-    public CommentDTO(Long idx,String content,LocalDateTime createdAt,LocalDateTime updatedAt,LocalDateTime deletedAt,MemberVO member){
-        this.idx=idx;
-        this.content=content;
-        this.createdAt=createdAt;
-        this.deletedAt=deletedAt;
-        this.updatedAt=updatedAt;
-        this.member=member;
+    public CommentDTO(Long idx, String content, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deletedAt, MemberDTO member) {
+        this.idx = idx;
+        this.content = content;
+        this.createdAt = createdAt;
+        this.deletedAt = deletedAt;
+        this.updatedAt = updatedAt;
+        this.member = member;
     }
 
-    public CommentVO toEntity(){
+    public CommentVO toEntity() {
         return CommentVO.builder()
                 .content(this.content)
                 .build();

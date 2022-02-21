@@ -49,7 +49,7 @@ public class CommentUpdateService {
 
         this.save(comment);
 
-        return comment.dto(false, false);
+        return comment.dto(true, false);
     }
 
     @Transactional
@@ -63,7 +63,7 @@ public class CommentUpdateService {
         comment.update(commentDTO.getContent());
         this.save(comment);
 
-        return comment.dto(false, false);
+        return comment.dto(true, false);
     }
 
     @Transactional

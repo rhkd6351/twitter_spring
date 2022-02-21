@@ -46,15 +46,14 @@ public class PostFindService {
 
         PostVO post = this.findByIdx(idx);
 
-        return post.dto(false, false, true);
+        return post.dto(true, false, true);
     }
 
     @Transactional(readOnly = true)
     public PagePostDTO findAll(Pageable pageable){
 
         Page<PostVO> page = postRepository.findAll(pageable);
-        List<PostDTO> posts = page.stream().map(i -> i.dto(false, false, true)).collect(Collectors.toList());
-        //TODO 이미지 구현 후 postImages true로 바꿔줘야함
+        List<PostDTO> posts = page.stream().map(i -> i.dto(true, false, true)).collect(Collectors.toList());
 
         return PagePostDTO.builder()
                 .posts(posts)
@@ -69,7 +68,7 @@ public class PostFindService {
         MemberVO member = memberFindService.getMyUserWithAuthorities();
 
         Page<PostVO> page = postRepository.findAllByMember(member, pageable);
-        List<PostDTO> posts = page.stream().map(i -> i.dto(false, false, true)).collect(Collectors.toList());
+        List<PostDTO> posts = page.stream().map(i -> i.dto(true, false, true)).collect(Collectors.toList());
 
         return PagePostDTO.builder()
                 .posts(posts)
