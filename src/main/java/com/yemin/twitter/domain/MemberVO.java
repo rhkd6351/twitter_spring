@@ -80,6 +80,9 @@ public class MemberVO {
         post.setMember(this);
     }
 
-
+    public void addComment(CommentVO comment){
+        this.comments.add(comment);
+        comment.setMember(this);
+    }
 
 }

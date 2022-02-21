@@ -11,7 +11,7 @@ import com.yemin.twitter.service.post.PostFindService;
 import com.yemin.twitter.service.post.PostImageService;
 import com.yemin.twitter.service.post.PostUpdateService;
 import javassist.NotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;

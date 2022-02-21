@@ -1,5 +1,6 @@
 package com.yemin.twitter.domain;
 
+import com.yemin.twitter.dto.comment.CommentDTO;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -45,13 +46,31 @@ public class CommentVO {
     private MemberVO member;
 
     @Builder
-    public CommentVO(String content, PostVO post, MemberVO member) {
+    public CommentVO(String content, MemberVO member,PostVO post) {
         this.content = content;
-        this.post = post;
         this.member = member;
+        this.post=post;
+    }
+
+    public CommentDTO dto(Boolean member,boolean post){
+        return CommentDTO.builder()
+                .idx(this.idx)
+                .content(this.content)
+                .createdAt(this.createdAt)
+                .updatedAt(this.updatedAt)
+                .deletedAt(this.deletedAt)
+                .build();
     }
 
     public void setPost(PostVO post) {
         this.post = post;
+    }
+
+    public void update(String content){
+        this.content = content;
+    }
+
+    public void setMember(MemberVO member) {
+        this.member = member;
     }
 }
