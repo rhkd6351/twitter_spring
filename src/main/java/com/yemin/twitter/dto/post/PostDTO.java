@@ -32,9 +32,11 @@ public class PostDTO {
 
     private LocalDateTime updatedAt;
 
+    private List<PostImageDTO> postImages;
     private List<CommentDTO> comments;
+
     @Builder
-    public PostDTO(Long idx, String title, String content, LocalDateTime createdAt, LocalDateTime deletedAt, LocalDateTime updatedAt, List<CommentDTO>comments) {
+    public PostDTO(Long idx, String title, String content, LocalDateTime createdAt, LocalDateTime deletedAt, LocalDateTime updatedAt, List<PostImageDTO> postImages, List<CommentDTO>comments) {
         this.idx = idx;
         this.title = title;
         this.content = content;
@@ -42,6 +44,7 @@ public class PostDTO {
         this.deletedAt = deletedAt;
         this.updatedAt = updatedAt;
         this.comments=comments;
+        this.postImages = postImages;
     }
 
     public PostVO toEntity(){
