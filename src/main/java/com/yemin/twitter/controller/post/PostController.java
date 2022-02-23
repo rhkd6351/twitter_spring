@@ -73,7 +73,7 @@ public class PostController {
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<PostDTO> savePost(
             @RequestPart(value = "img", required = false) List<MultipartFile> mfList,
-            @RequestPart(value = "post") @Validated(ValidationGroups.postSaveGroup.class) PostDTO postDTO) throws AuthException, IOException, NotSupportedException {
+            @Validated(ValidationGroups.postSaveGroup.class) PostDTO postDTO) throws AuthException, IOException, NotSupportedException {
 
         PostDTO savedPost = postUpdateService.save(postDTO, mfList);
 
@@ -83,7 +83,7 @@ public class PostController {
     @PutMapping(path = "/member/posts/{post-idx}", consumes = {"multipart/form-data"})
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<PostDTO> modifyPost(
-            @RequestPart(value = "post") @Validated(ValidationGroups.postUpdateGroup.class) PostDTO postDTO,
+            PostDTO postDTO,
             @RequestPart(value = "img", required = false) List<MultipartFile> mfList,
             @PathVariable(value = "post-idx")Long idx) throws AuthException, NotFoundException, IOException, NotSupportedException {
 
