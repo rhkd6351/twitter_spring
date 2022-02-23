@@ -48,7 +48,7 @@ public class MemberVO {
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "image_idx_fk")
-    private MemberImageVO memberImage;
+    private MemberImageVO image;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<PostVO> posts = new ArrayList<>();
@@ -57,13 +57,13 @@ public class MemberVO {
     private List<CommentVO> comments = new ArrayList<>();
 
     @Builder
-    public MemberVO(String email, String password, String username, AuthVO auth, boolean activated, MemberImageVO memberImage) {
+    public MemberVO(String email, String password, String username, AuthVO auth, boolean activated, MemberImageVO image) {
         this.email = email;
         this.password = password;
         this.username = username;
         this.auth = auth;
         this.activated = activated;
-        this.memberImage = memberImage;
+        this.image = image;
     }
 
     public MemberDTO dto(boolean MemberImage){
@@ -73,7 +73,7 @@ public class MemberVO {
                 .password("*")
                 .username(this.username)
                 .auth(this.auth.getName())
-                .memberImageDTO(MemberImage ? (this.memberImage != null ? this.memberImage.dto() : null) : null)
+                .image(MemberImage ? (this.image != null ? this.image.dto() : null) : null)
                 .build();
     }
 
@@ -88,6 +88,6 @@ public class MemberVO {
     }
 
     public void setMemberImage(MemberImageVO memberImage) {
-        this.memberImage = memberImage;
+        this.image = memberImage;
     }
 }
