@@ -55,20 +55,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
                 .and()
-                .authorizeRequests()
-                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                .authorizeRequests().anyRequest().permitAll()
+//                .authorizeRequests()
+//                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+//                .antMatchers(HttpMethod.POST, "/api/member").permitAll() //signup
+//                .antMatchers(HttpMethod.POST, "/api/member/authentication").permitAll() // login
+//
+//                .antMatchers(HttpMethod.GET, "/api/posts/**").permitAll() //get post by idx
+//                .antMatchers(HttpMethod.GET, "/api/posts").permitAll() //get post
+//
+//                .antMatchers(HttpMethod.GET, "/api/posts/comments").permitAll() //get comment list
+//                .antMatchers(HttpMethod.GET, "/api/members/comments").permitAll() //get  my comment list
+//                .anyRequest().authenticated()
 
-                .antMatchers(HttpMethod.POST, "/api/member").permitAll() //signup
-                .antMatchers(HttpMethod.POST, "/api/member/authentication").permitAll() // login
-
-                .antMatchers(HttpMethod.GET, "/api/posts/**").permitAll() //get post by idx
-                .antMatchers(HttpMethod.GET, "/api/posts").permitAll() //get post
-
-                .antMatchers(HttpMethod.GET, "/api/posts/comments").permitAll() //get comment list
-                .antMatchers(HttpMethod.GET, "/api/members/comments").permitAll() //get  my comment list
-
-
-                .anyRequest().authenticated()
                 .and()
                 .apply(new JwtSecurityConfig(tokenProvider));
     }

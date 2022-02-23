@@ -34,6 +34,6 @@ public class MemberSignUpService {
         AuthVO auth = authFindService.getByName(AuthType.USER.getName());
         MemberVO member = memberDTO.toEntity(passwordEncoder.encode(memberDTO.getPassword()), auth);
 
-        return memberRepository.save(member).dto();
+        return memberRepository.save(member).dto(false);
     }
 }

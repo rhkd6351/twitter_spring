@@ -1,6 +1,9 @@
 package com.yemin.twitter.domain;
 
+import com.yemin.twitter.dto.member.MemberImageDTO;
+import com.yemin.twitter.dto.post.PostImageDTO;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -22,20 +25,8 @@ public class MemberImageVO {
     @Column(name = "name", length = 255, nullable = false)
     private String name;
 
-    @Column(name = "original_name", length = 255, nullable= false)
-    private String originalName;
-
-    @Column(name = "save_name", length = 255, nullable = false)
-    private String saveName;
-
-    @Column(name = "size", nullable = false)
-    private Integer size;
-
-    @Column(name = "upload_path", length = 255, nullable = false)
-    private String uploadPath;
-
-    @Column(name = "extension", length = 45, nullable = false)
-    private String extension;
+    @Embedded
+    private FileInfo fileInfo;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -44,4 +35,29 @@ public class MemberImageVO {
     @OneToOne(mappedBy = "memberImage")
     private MemberVO member;
 
+    @Builder
+    public MemberImageVO(Long idx, String name, FileInfo fileInfo, LocalDateTime createdAt) {
+        this.idx = idx;
+        this.name = name;
+        this.fileInfo = fileInfo;
+    }
+
+    public void setMember(MemberVO member) {
+        this.member = member;
+        member.setMemberImage(this);
+    }
+
+    public MemberImageDTO dto(){
+        return MemberImageDTO.builder()
+                .idx(this.idx)
+                .name(this.name)
+                .originalName(this.fileInfo.getOriginalName())
+                .saveName(this.fileInfo.getSaveName())
+                .size(this.fileInfo.getSize())
+                .uploadPath(this.fileInfo.getUploadPath())
+                .extension(this.fileInfo.getExtension())
+                .url("/api/member/image/" + this.name)
+                .createdAt(this.createdAt)
+                .build();
+    }
 }

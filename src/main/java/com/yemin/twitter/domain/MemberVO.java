@@ -46,7 +46,7 @@ public class MemberVO {
     @JoinColumn(name = "auth_name_fk")
     private AuthVO auth;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "image_idx_fk")
     private MemberImageVO memberImage;
 
@@ -57,21 +57,23 @@ public class MemberVO {
     private List<CommentVO> comments = new ArrayList<>();
 
     @Builder
-    public MemberVO(String email, String password, String username, AuthVO auth, boolean activated) {
+    public MemberVO(String email, String password, String username, AuthVO auth, boolean activated, MemberImageVO memberImage) {
         this.email = email;
         this.password = password;
         this.username = username;
         this.auth = auth;
         this.activated = activated;
+        this.memberImage = memberImage;
     }
 
-    public MemberDTO dto(){
+    public MemberDTO dto(boolean MemberImage){
         return MemberDTO.builder()
                 .idx(this.idx)
                 .email(this.email)
                 .password("*")
                 .username(this.username)
                 .auth(this.auth.getName())
+                .memberImageDTO(MemberImage ? (this.memberImage != null ? this.memberImage.dto() : null) : null)
                 .build();
     }
 
@@ -85,4 +87,7 @@ public class MemberVO {
         comment.setMember(this);
     }
 
+    public void setMemberImage(MemberImageVO memberImage) {
+        this.memberImage = memberImage;
+    }
 }

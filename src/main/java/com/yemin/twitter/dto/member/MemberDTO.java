@@ -1,6 +1,7 @@
 package com.yemin.twitter.dto.member;
 
 import com.yemin.twitter.domain.AuthVO;
+import com.yemin.twitter.domain.MemberImageVO;
 import com.yemin.twitter.domain.MemberVO;
 import com.yemin.twitter.dto.ValidationGroups;
 import lombok.Builder;
@@ -28,9 +29,13 @@ public class MemberDTO {
     @NotBlank(groups = {ValidationGroups.memberSignUpGroup.class}, message = "이름이 입력되지 않았습니다.")
     String username;
 
+    MemberImageDTO memberImageDTO;
+
     String auth;
 
     LocalDateTime createdAt;
+
+
 
     public MemberVO toEntity(String encodedPassword, AuthVO auth){
         return MemberVO.builder()

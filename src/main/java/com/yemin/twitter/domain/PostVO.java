@@ -73,7 +73,7 @@ public class PostVO {
                 .createdAt(this.createdAt)
                 .deletedAt(this.deletedAt)
                 .updatedAt(this.updatedAt)
-                .member(member ? this.member.dto() : null)
+                .member(member ? this.member.dto(true) : null)
                 .postImages(postImages ? this.postImages.stream().map(PostImageVO::dto).collect(Collectors.toList()) : null)
                 .comments(comments ? this.comments.stream().map(i -> i.dto(false, false)).collect(Collectors.toList()) : null)
                 .build();
