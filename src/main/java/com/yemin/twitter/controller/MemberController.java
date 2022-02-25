@@ -4,13 +4,17 @@ import com.yemin.twitter.domain.MemberVO;
 import com.yemin.twitter.dto.MessageDTO;
 import com.yemin.twitter.dto.ValidationGroups;
 import com.yemin.twitter.dto.member.MemberDTO;
+import com.yemin.twitter.dto.member.PageMemberDTO;
+import com.yemin.twitter.repository.MemberRepository;
 import com.yemin.twitter.service.member.MemberFindService;
 import com.yemin.twitter.service.member.MemberImageService;
 import com.yemin.twitter.service.member.MemberSignUpService;
 import com.yemin.twitter.service.member.MemberUpdateService;
 import javassist.NotFoundException;
 import javassist.bytecode.DuplicateMemberException;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,8 +37,10 @@ public class MemberController {
     MemberUpdateService memberUpdateService;
     MemberImageService memberImageService;
     MemberFindService memberFindService;
+    MemberRepository memberRepository;
 
-    public MemberController(MemberSignUpService memberSignUpService, MemberUpdateService memberUpdateService, MemberImageService memberImageService, MemberFindService memberFindService) {
+    public MemberController(MemberSignUpService memberSignUpService, MemberUpdateService memberUpdateService, MemberImageService memberImageService, MemberFindService memberFindService,MemberRepository memberRepository) {
+        this.memberRepository=memberRepository;
         this.memberSignUpService = memberSignUpService;
         this.memberUpdateService = memberUpdateService;
         this.memberImageService = memberImageService;
@@ -76,6 +82,26 @@ public class MemberController {
 
         return new ResponseEntity<>(member.dto(true), HttpStatus.OK);
     }
+
+    @GetMapping("/member/page/search")
+
+    public Page<PageMemberDTO>searchMember(String username,@PageableDefault(size = 10, sort = "idx") Pageable pageable)
+
+    {
+        Page<MemberVO> memberList=memberRepository.findAllByUsername(username,pageable);
+        Page<PageMemberDTO> mList=memberList.map(
+                member->new PageMemberDTO(
+                        member.getIdx(),
+                        member.getUsername(),
+                        member.getMemberImage()
+                )
+        );
+
+        return mList;
+    }
+
+
+
 
 
 }
