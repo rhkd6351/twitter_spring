@@ -12,6 +12,8 @@ public interface PostRepository extends JpaRepository<PostVO, Long> {
 
     public Page<PostVO> findAllByMember(MemberVO member, Pageable pageable);
 
+    public Page<PostVO> findAllByContentContaining(String content, Pageable pageable);
+
     public Page<PostVO> findAll(Pageable pageable);
 
 }

@@ -63,6 +63,19 @@ public class PostFindService {
     }
 
     @Transactional(readOnly = true)
+    public PagePostDTO findAllByQuery(String query, Pageable pageable){
+
+        Page<PostVO> page = postRepository.findAllByContentContaining(query, pageable);
+        List<PostDTO> posts = page.stream().map(i -> i.dto(true, false, true)).collect(Collectors.toList());
+
+        return PagePostDTO.builder()
+                .posts(posts)
+                .currentPage(pageable.getPageNumber())
+                .totalPage(page.getTotalPages() - 1)
+                .build();
+    }
+
+    @Transactional(readOnly = true)
     public PagePostDTO findAllWithAuth(Pageable pageable) throws AuthException {
 
         MemberVO member = memberFindService.getMyUserWithAuthorities();
