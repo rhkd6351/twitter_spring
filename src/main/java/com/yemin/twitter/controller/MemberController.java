@@ -43,8 +43,8 @@ public class MemberController {
     MemberFindService memberFindService;
     MemberRepository memberRepository;
 
-    public MemberController(MemberSignUpService memberSignUpService, MemberUpdateService memberUpdateService, MemberImageService memberImageService, MemberFindService memberFindService,MemberRepository memberRepository) {
-        this.memberRepository=memberRepository;
+    public MemberController(MemberSignUpService memberSignUpService, MemberUpdateService memberUpdateService, MemberImageService memberImageService, MemberFindService memberFindService, MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
         this.memberSignUpService = memberSignUpService;
         this.memberUpdateService = memberUpdateService;
         this.memberImageService = memberImageService;
@@ -71,7 +71,7 @@ public class MemberController {
 
     @GetMapping(value = "/member/image/{image-name}", produces = MediaType.IMAGE_JPEG_VALUE)
     public ResponseEntity<byte[]> getMemberImage(
-            @PathVariable(value = "image-name")String imageName) throws NotFoundException, IOException {
+            @PathVariable(value = "image-name") String imageName) throws NotFoundException, IOException {
 
 
         byte[] imageByte = memberImageService.getByteByName(imageName);
@@ -89,29 +89,31 @@ public class MemberController {
     }
 
     @GetMapping("/member/page/search")
+    public ResponseEntity<PageMemberDTO> searchMember(
+            @RequestParam(value = "username") String username, @PageableDefault(size = 10, sort = "idx") Pageable pageable) {
 
-    public Page<PageMemberDTO>searchMember(String username, List<MultipartFile> mfList, @PageableDefault(size = 10, sort = "idx") Pageable pageable)
-            throws NotFoundException, IOException, NotSupportedException, AuthException {
+        PageMemberDTO pageMemberDTO = memberFindService.getMembersByUsername(username, pageable);
 
-        Page<MemberVO> memberList=memberRepository.findAllByUsername(username,pageable);
-        MemberImageVO image=memberImageService.getByName(username);
-
-        if(image==null){
-            for(MultipartFile mf:mfList){
-                MemberVO memberVO = memberUpdateService.saveProfile(mf);
-            }
-        }
-        Page<PageMemberDTO> mList=memberList.map(
-                mem->new PageMemberDTO(
-                        mem.getIdx(),
-                        mem.getUsername(),
-                        mem.getMemberImage().getFileInfo()
-                )
-        );
-        return mList;
+        return new ResponseEntity<>(pageMemberDTO, HttpStatus.OK);
     }
-
 }
+
+
+//    MemberImageVO image=memberImageService.getByName(username);
+//
+//        if(image==null){
+//                for(MultipartFile mf:mfList){
+//                MemberVO memberVO = memberUpdateService.saveProfile(mf);
+//                }
+//                }
+//                Page<PageMemberDTO> mList=memberList.map(
+//        mem->new PageMemberDTO(
+//        mem.getIdx(),
+//        mem.getUsername(),
+//        mem.getMemberImage().getFileInfo()
+//        )
+//        );
+//        return mList;
 
 
 

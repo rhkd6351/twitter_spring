@@ -17,11 +17,13 @@ public interface MemberRepository extends JpaRepository<MemberVO, Long> {
 
     public Optional<MemberVO> findOneByEmail(String email);
 
-    @Query(
-            value = "SELECT m FROM MemberVO m WHERE m.username LIKE %:username%",
-            countQuery = "SELECT COUNT(m.username) FROM MemberVO m WHERE m.username LIKE %:username%"
-    )
-    Page<MemberVO> findAllByUsername(String username, Pageable pageable);
+//    @Query(
+//            value = "SELECT m FROM MemberVO m WHERE m.username LIKE %:username%",
+//            countQuery = "SELECT COUNT(m.username) FROM MemberVO m WHERE m.username LIKE %:username%"
+//    )
+//    Page<MemberVO> findAllByUsername(String username, Pageable pageable);
+
+        Page<MemberVO> findAllByUsernameContaining(String username, Pageable pageable);
 
 
 }
