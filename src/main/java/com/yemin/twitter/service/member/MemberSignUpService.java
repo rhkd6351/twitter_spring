@@ -36,4 +36,5 @@ public class MemberSignUpService {
 
         return memberRepository.save(member).dto(false);
     }
+
 }

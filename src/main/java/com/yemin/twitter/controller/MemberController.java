@@ -1,9 +1,11 @@
 package com.yemin.twitter.controller;
 
+import com.yemin.twitter.domain.MemberImageVO;
 import com.yemin.twitter.domain.MemberVO;
 import com.yemin.twitter.dto.MessageDTO;
 import com.yemin.twitter.dto.ValidationGroups;
 import com.yemin.twitter.dto.member.MemberDTO;
+import com.yemin.twitter.dto.member.MemberImageDTO;
 import com.yemin.twitter.dto.member.PageMemberDTO;
 import com.yemin.twitter.repository.MemberRepository;
 import com.yemin.twitter.service.member.MemberFindService;
@@ -26,6 +28,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.security.auth.message.AuthException;
 import javax.transaction.NotSupportedException;
 import java.io.IOException;
+import java.lang.reflect.Member;
+import java.util.List;
 
 
 @RestController
@@ -69,6 +73,7 @@ public class MemberController {
     public ResponseEntity<byte[]> getMemberImage(
             @PathVariable(value = "image-name")String imageName) throws NotFoundException, IOException {
 
+
         byte[] imageByte = memberImageService.getByteByName(imageName);
 
         return new ResponseEntity<>(imageByte, HttpStatus.OK);
@@ -85,24 +90,26 @@ public class MemberController {
 
     @GetMapping("/member/page/search")
 
-    public Page<PageMemberDTO>searchMember(String username,@PageableDefault(size = 10, sort = "idx") Pageable pageable)
+    public Page<PageMemberDTO>searchMember(String username, List<MultipartFile> mfList, @PageableDefault(size = 10, sort = "idx") Pageable pageable)
+            throws NotFoundException, IOException, NotSupportedException, AuthException {
 
-    {
         Page<MemberVO> memberList=memberRepository.findAllByUsername(username,pageable);
+        MemberImageVO image=memberImageService.getByName(username);
+
+        if(image==null){
+            for(MultipartFile mf:mfList){
+                MemberVO memberVO = memberUpdateService.saveProfile(mf);
+            }
+        }
         Page<PageMemberDTO> mList=memberList.map(
-                member->new PageMemberDTO(
-                        member.getIdx(),
-                        member.getUsername(),
-                        member.getMemberImage()
+                mem->new PageMemberDTO(
+                        mem.getIdx(),
+                        mem.getUsername(),
+                        mem.getMemberImage().getFileInfo()
                 )
         );
-
         return mList;
     }
-
-
-
-
 
 }
 

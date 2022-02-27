@@ -1,5 +1,6 @@
 package com.yemin.twitter.dto.member;
 
+import com.yemin.twitter.domain.FileInfo;
 import com.yemin.twitter.domain.MemberImageVO;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -12,13 +13,14 @@ import lombok.NoArgsConstructor;
     public class PageMemberDTO {
        private Long idx;
        private String username;
-       private MemberImageVO memberImageDTO;
+       private FileInfo fileInfo;
+
 
         @Builder
-        public PageMemberDTO(Long idx, String username, MemberImageVO memberImage)
+        public PageMemberDTO(Long idx, String username, FileInfo fileInfo)
         {
             this.idx=idx;
             this.username=username;
-            this.memberImageDTO=memberImage;
+            this.fileInfo=fileInfo;
         }
 }
