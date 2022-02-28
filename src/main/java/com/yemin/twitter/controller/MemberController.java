@@ -99,22 +99,6 @@ public class MemberController {
 }
 
 
-//    MemberImageVO image=memberImageService.getByName(username);
-//
-//        if(image==null){
-//                for(MultipartFile mf:mfList){
-//                MemberVO memberVO = memberUpdateService.saveProfile(mf);
-//                }
-//                }
-//                Page<PageMemberDTO> mList=memberList.map(
-//        mem->new PageMemberDTO(
-//        mem.getIdx(),
-//        mem.getUsername(),
-//        mem.getMemberImage().getFileInfo()
-//        )
-//        );
-//        return mList;
-
 
 
 
