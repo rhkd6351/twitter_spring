@@ -43,13 +43,25 @@ public class PostController {
         this.postImageService = postImageService;
     }
 
-    @GetMapping("/posts")
-    public ResponseEntity<PagePostDTO> getAllPosts(@PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable){
+//    @GetMapping("/posts")
+//    public ResponseEntity<PagePostDTO> getAllPosts(@PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable){
+//
+//        PagePostDTO page = postFindService.findAll(pageable);
+//
+//        return new ResponseEntity<>(page, HttpStatus.OK);
+//    }
 
-        PagePostDTO page = postFindService.findAll(pageable);
+    @GetMapping("/posts")
+    public ResponseEntity<PagePostDTO> getAllPostsByQuery(
+            @PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable,
+            @RequestParam(value = "query", defaultValue = "", required = false) String query){
+
+        PagePostDTO page = postFindService.findAllByQuery(query, pageable);
 
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
+
+
 
     @GetMapping("/posts/{post-idx}")
     public ResponseEntity<PostDTO> getPostByIdx(@PathVariable(value = "post-idx")Long idx) throws NotFoundException {

@@ -29,7 +29,7 @@ public class MemberDTO {
     @NotBlank(groups = {ValidationGroups.memberSignUpGroup.class}, message = "이름이 입력되지 않았습니다.")
     String username;
 
-    MemberImageDTO memberImageDTO;
+    MemberImageDTO image;
 
     String auth;
 
