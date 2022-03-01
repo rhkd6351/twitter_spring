@@ -1,11 +1,14 @@
 package com.yemin.twitter.service.member;
 
 import com.yemin.twitter.domain.*;
+import com.yemin.twitter.dto.member.PageMemberDTO;
 import com.yemin.twitter.repository.MemberImageRepository;
 import com.yemin.twitter.repository.PostImageRepository;
 import com.yemin.twitter.util.FileUtil;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +24,7 @@ public class MemberImageService {
     private static final String UPLOADPATH = "/img";
 
     MemberImageRepository memberImageRepository;
+
 
     FileUtil fileUtil;
     int maxFileSize;
@@ -76,8 +80,11 @@ public class MemberImageService {
         Optional<MemberImageVO> optional = memberImageRepository.findByName(name);
 
         if(optional.isEmpty())
-            throw new NotFoundException("invalid image name");
+        {throw new NotFoundException("invalid image name");
+        }
 
         return optional.get();
     }
+
+
 }

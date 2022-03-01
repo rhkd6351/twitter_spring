@@ -1,16 +1,22 @@
 package com.yemin.twitter.controller;
 
+import com.yemin.twitter.domain.MemberImageVO;
 import com.yemin.twitter.domain.MemberVO;
 import com.yemin.twitter.dto.MessageDTO;
 import com.yemin.twitter.dto.ValidationGroups;
 import com.yemin.twitter.dto.member.MemberDTO;
+import com.yemin.twitter.dto.member.MemberImageDTO;
+import com.yemin.twitter.dto.member.PageMemberDTO;
+import com.yemin.twitter.repository.MemberRepository;
 import com.yemin.twitter.service.member.MemberFindService;
 import com.yemin.twitter.service.member.MemberImageService;
 import com.yemin.twitter.service.member.MemberSignUpService;
 import com.yemin.twitter.service.member.MemberUpdateService;
 import javassist.NotFoundException;
 import javassist.bytecode.DuplicateMemberException;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +28,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.security.auth.message.AuthException;
 import javax.transaction.NotSupportedException;
 import java.io.IOException;
+import java.lang.reflect.Member;
+import java.util.List;
 
 
 @RestController
@@ -33,8 +41,10 @@ public class MemberController {
     MemberUpdateService memberUpdateService;
     MemberImageService memberImageService;
     MemberFindService memberFindService;
+    MemberRepository memberRepository;
 
-    public MemberController(MemberSignUpService memberSignUpService, MemberUpdateService memberUpdateService, MemberImageService memberImageService, MemberFindService memberFindService) {
+    public MemberController(MemberSignUpService memberSignUpService, MemberUpdateService memberUpdateService, MemberImageService memberImageService, MemberFindService memberFindService, MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
         this.memberSignUpService = memberSignUpService;
         this.memberUpdateService = memberUpdateService;
         this.memberImageService = memberImageService;
@@ -61,7 +71,8 @@ public class MemberController {
 
     @GetMapping(value = "/member/image/{image-name}", produces = MediaType.IMAGE_JPEG_VALUE)
     public ResponseEntity<byte[]> getMemberImage(
-            @PathVariable(value = "image-name")String imageName) throws NotFoundException, IOException {
+            @PathVariable(value = "image-name") String imageName) throws NotFoundException, IOException {
+
 
         byte[] imageByte = memberImageService.getByteByName(imageName);
 
@@ -77,8 +88,16 @@ public class MemberController {
         return new ResponseEntity<>(member.dto(true), HttpStatus.OK);
     }
 
+    @GetMapping("/member/page/search")
+    public ResponseEntity<PageMemberDTO> searchMember(
+            @RequestParam(value = "username") String username, @PageableDefault(size = 10, sort = "idx") Pageable pageable) {
 
+        PageMemberDTO pageMemberDTO = memberFindService.getMembersByUsername(username, pageable);
+
+        return new ResponseEntity<>(pageMemberDTO, HttpStatus.OK);
+    }
 }
+
 
 
 
